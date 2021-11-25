@@ -25,7 +25,7 @@ class UserEmailRequest extends FormRequest
     {
         return [
             'user' => 'numeric|exists:users,id',
-            'email_type' => 'numeric|',
+            'email_type' => 'numeric',
         ];
     }
 }

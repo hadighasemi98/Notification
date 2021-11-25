@@ -8,7 +8,6 @@
     <div class="col-md-8">
         <div class="card">
         @include('messages.show-messages')
-
             <div class="card-header">
                 @lang('notification.send_email')
             </div>
@@ -18,15 +17,15 @@
                         <label for="user">@lang('notification.users')</label>
                         <select name="user"  class="form-control" id="user">
                             @foreach ($users as $user)
-                            <option value="fff">{{$user->name}}</option>
+                            <option value="{{$user->id}}">{{$user->name}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="email_type">@lang('notification.email_type')</label>
                         <select name="email_type"  class="form-control" id="email_type">
-                            @foreach($emailTypes as $emailType => $value)
-                            <option value="sss">{{$value}} </option>
+                            @foreach($emailTypes as $key => $emailType)
+                            <option value="{{$key}}">{{$emailType}} </option>
                             @endforeach
                         </select>
                     </div>
