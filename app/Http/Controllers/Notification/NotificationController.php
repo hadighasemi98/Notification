@@ -8,6 +8,7 @@ use App\Mail\UserRegister;
 use App\Models\User;
 use App\Services\Notifications\Constants\EmailTypes;
 use App\Services\Notifications\Notification;
+use GrahamCampbell\ResultType\Result;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
@@ -28,14 +29,28 @@ class NotificationController extends Controller
 
     public function sendEmail(UserEmailRequest $request)
     {
-        $validatedData = $request->validated();
-        // dd($request->all());
-        $mailable = EmailTypes::toMail($validatedData['email_type']);
-        dd($mailable);
-         
-        // $this->notification->sendEmail($this->user::find($validatedData['user']), UserRegister::class);
+        try {
+            $validatedData = $request->validated();
+            $mailable = EmailTypes::toMail($validatedData['email_type']);
+            $this->notification->sendEmail($this->user::find($validatedData['user']), new $mailable);
+            return back()->with('success', __('notification.send_email_success'));
         
-        return back()->with('', '');
+        } catch (\Exception $error) {
+            return back()->with('failed', __('notification.email_services_has_problem'));
+        }
+  
+    }
+
+    public function sms()
+    {
+        $users = $this->user::all();
+        return view('notifications.send-sms' , compact('users'));
+    }
+    
+    public function smsSms()
+    {
+        $users = $this->user::all();
+        return view('notifications.send-sms' , compact('users'));
     }
 
     public function home()

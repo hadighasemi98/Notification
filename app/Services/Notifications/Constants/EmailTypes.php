@@ -24,12 +24,18 @@ class EmailTypes
 
     public static function toMail($type)
     {
-        $types = [
-            self::USER_REGISTERED => UserRegister::class ,
-            self::TOPIC_CREATED   => TopicCreated::class ,
-            self::FORGET_PASSWORD => ForgetPassword::class ,
-        ];
+        try {
+            $types = [
+                self::USER_REGISTERED => UserRegister::class ,
+                self::TOPIC_CREATED   => TopicCreated::class ,
+                self::FORGET_PASSWORD => ForgetPassword::class ,
+            ];
+    
+            return $types[$type];
 
-        return $types[$type];
+        } catch (\Exception $error) {
+            throw new \InvalidArgumentException('Mailable class does not exist !');
+        }
+        
     }
 }

@@ -36,6 +36,12 @@ Route::prefix('/notification')->group(function () {
 
     Route::get('/email', [NotificationController::class , 'email'])->name('notification.form.email');
     Route::post('/email', [NotificationController::class , 'sendEmail'])->name('notification.send.email');
+
+    Route::get('/sms', [NotificationController::class , 'sms'])->name('notification.form.sms');
+    Route::post('/sms', [NotificationController::class , 'sendSms'])->name('notification.send.sms');
+
+
+
 });
 
 

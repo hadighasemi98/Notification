@@ -8,29 +8,24 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                @lang('notification.send_sms')
+                @lang('notification.send-sms')
             </div>
             
-            <form action="" method="POST" >
+            <form action="{{route('notification.send.sms')}}" method="POST" >
+                @csrf
                     <div class="form-group ">
                         <label for="user">@lang('notification.users')</label>
                         <select name="user"  class="form-control" id="user">
-                            <option</option>
+                            @foreach($users as $user)
+                            <option value="{{$user->id}}">{{$user->name}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="text">@lang('notification.sms_text')</label>
                     <textarea name="text" id="text"  class="form-control" rows="3">{{old('text')}}</textarea>
                     </div>
-                    @if ($errors->any())
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <div class="small mb-2">
-                        <li class="text-danger">{{$error}}</li>
-                        </div>
-                        @endforeach
-                    </ul>
-                    @endif
+                    
                     <button type="submit" class="btn btn-info">@lang('notification.send')</button>
                 </form>
             </div>
