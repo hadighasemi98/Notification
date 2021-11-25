@@ -16,7 +16,7 @@ class NotificationController extends Controller
     public function __construct()
     {
         $this->user = User::class;
-        $this->notification = new Notification();
+        $this->notification = resolve(Notification::class);
     }
 
     public function email()
@@ -29,15 +29,12 @@ class NotificationController extends Controller
     public function sendEmail(UserEmailRequest $request)
     {
         $validatedData = $request->validated();
-        dd($request->all());
+        // dd($request->all());
+        $mailable = EmailTypes::toMail($validatedData['email_type']);
+        dd($mailable);
+         
+        // $this->notification->sendEmail($this->user::find($validatedData['user']), UserRegister::class);
         
-        $validatedData = [
-            'user' => $request->user,
-            'email_type' => $request->email_type,
-        ];
-        
-
-        $emailTypes = $this->notification->sendEmail($this->user::find($validatedData['user']), UserRegister::class);
         return back()->with('', '');
     }
 

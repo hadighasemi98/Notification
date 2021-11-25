@@ -2,6 +2,10 @@
 
 namespace App\Services\Notifications\Constants;
 
+use App\Mail\ForgetPassword;
+use App\Mail\TopicCreated;
+use App\Mail\UserRegister;
+
 class EmailTypes
 {
     const USER_REGISTERED = 1;
@@ -16,5 +20,16 @@ class EmailTypes
             self::FORGET_PASSWORD => 'رمز فراموش شده' ,
 
         ];
+    }
+
+    public static function toMail($type)
+    {
+        $types = [
+            self::USER_REGISTERED => UserRegister::class ,
+            self::TOPIC_CREATED   => TopicCreated::class ,
+            self::FORGET_PASSWORD => ForgetPassword::class ,
+        ];
+
+        return $types[$type];
     }
 }
