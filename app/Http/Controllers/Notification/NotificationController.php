@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Notification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserSmsData;
+use App\Jobs\SendEmail;
+use App\Jobs\SendSms;
 use App\Models\User;
 use App\Services\Notifications\Constants\EmailTypes;
 use App\Services\Notifications\Exceptions\UserDoseNotHaveMobile;
@@ -34,7 +36,7 @@ class NotificationController extends Controller
         try {
             $validatedData = $request->validated();
             $mailable = EmailTypes::toMail($validatedData['email_type']);
-            $this->notification->sendEmail($this->user::find($validatedData['user']), new $mailable);
+            SendEmail::dispatch($this->user::find($validatedData['user']), new $mailable);
             return  $this->redirectBack('success', __('notification.send_email_success'));
         
         } catch (\Exception $error) {
@@ -53,9 +55,8 @@ class NotificationController extends Controller
     {
         try {
             $validatedData = $request->validated();            
-            $result = $this->notification->sendms($validatedData['text'],$this->user::find($validatedData['user']));
-
-            return  $this->redirectBack('success', $result['Message']);
+            SendSms::dispatch($validatedData['text'],$this->user::find($validatedData['user']));
+            return  $this->redirectBack('success',  __('notification.send_sms_successfully') );
 
         } catch (UserDoseNotHaveMobile $error) {
             return $this->redirectBack('failed', __('notification.user_dose_not_have_mobile'));

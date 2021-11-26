@@ -7,10 +7,11 @@
 <div class="row justify-content-md-center">
     <div class="col-md-8">
         <div class="card">
+        @include('messages.show-messages')
+
             <div class="card-header">
                 @lang('notification.send-sms')
             </div>
-            @include('messages.show-messages')
 
             <form action="{{route('notification.send.sms')}}" method="POST" >
                 @csrf
