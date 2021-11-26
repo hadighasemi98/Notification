@@ -7,7 +7,9 @@ use App\Http\Requests\UserEmailRequest;
 use App\Http\Requests\UserSmsData;
 use App\Models\User;
 use App\Services\Notifications\Constants\EmailTypes;
+use App\Services\Notifications\Exceptions\UserDoseNotHaveMobile;
 use App\Services\Notifications\Notification;
+use Exception;
 
 class NotificationController extends Controller
 {
@@ -33,10 +35,10 @@ class NotificationController extends Controller
             $validatedData = $request->validated();
             $mailable = EmailTypes::toMail($validatedData['email_type']);
             $this->notification->sendEmail($this->user::find($validatedData['user']), new $mailable);
-            return back()->with('success', __('notification.send_email_success'));
+            return  $this->redirectBack('success', __('notification.send_email_success'));
         
         } catch (\Exception $error) {
-            return back()->with('failed', __('notification.email_services_has_problem'));
+            return  $this->redirectBack('failed', __('notification.email_services_has_problem'));
         }
   
     }
@@ -51,22 +53,28 @@ class NotificationController extends Controller
     {
         try {
             $validatedData = $request->validated();            
-            $result = $this->notification->sendSms($validatedData['text'],$this->user::find($validatedData['user']));
-            
-            if(!$result['IsSuccessful'])
-                return back()->with('failed', $result['Message']);
+            $result = $this->notification->sendms($validatedData['text'],$this->user::find($validatedData['user']));
 
-            return back()->with('success', $result['Message']);
+            return  $this->redirectBack('success', $result['Message']);
 
-        } catch (\Exception $error) {
-            return back()->with('failed', __('notification.sms_services_has_problem'));
-        }
+        } catch (UserDoseNotHaveMobile $error) {
+            return $this->redirectBack('failed', __('notification.user_dose_not_have_mobile'));
         
+        } catch (Exception $err) {
+            return $this->redirectBack('failed', __('notification.sms_services_has_problem'));
+        }
+
 
     }
 
     public function home()
     {
         return view('home');
+    }
+
+    private function redirectBack(string $type , string $message)
+    {
+        return back()->with($type, $message);
+
     }
 }

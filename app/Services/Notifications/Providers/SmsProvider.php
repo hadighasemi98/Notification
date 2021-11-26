@@ -3,6 +3,8 @@
 namespace App\Services\Notifications\Providers ;
 
 use App\Models\User;
+use App\Services\Notifications\Exceptions\SmsProviderException;
+use App\Services\Notifications\Exceptions\UserDoseNotHaveMobile;
 use App\Services\Notifications\Providers\Contracts\ProviderInterface;
 use Exception;
 use Ipecompany\Smsirlaravel\Smsirlaravel;
@@ -27,8 +29,8 @@ class SmsProvider implements ProviderInterface
         try {
             return Smsirlaravel::send($this->text, $this->user->mobile);
 
-        } catch (\Exception $err) {
-            throw new \InvalidArgumentException($err->getMessage());
+        } catch (SmsProviderException $err) {
+            throw new SmsProviderException($err->getMessage());
         }
         
     }
@@ -36,6 +38,6 @@ class SmsProvider implements ProviderInterface
     private function havePhoneNumber ()
     {
         if(is_null($this->user->mobile))
-            throw new Exception('Mobile dose not be null');
+            throw new UserDoseNotHaveMobile('Mobile dose not be null');
     }
 }
