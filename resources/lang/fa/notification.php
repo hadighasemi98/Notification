@@ -13,5 +13,8 @@ return [
     
     'email_services_has_problem' => 'سرویس ایمیل با خطا روبرو شد ، لطفا بار دیگر تلاش کنید !',
     'send_email_success' => 'ایمیل ارسال شد !',
+
+    'sms_services_has_problem' => 'سرویس پیام کوتاه با خطا روبرو شد ، لطفا بار دیگر تلاش کنید !',
+
     
 ] ;

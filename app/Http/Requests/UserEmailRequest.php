@@ -24,8 +24,8 @@ class UserEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'user' => 'numeric|exists:users,id',
-            'email_type' => 'numeric',
+            'user' => 'required|numeric|exists:users,id',
+            'email_type' => 'required|numeric',
         ];
     }
 }

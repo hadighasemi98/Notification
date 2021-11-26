@@ -10,14 +10,15 @@
             <div class="card-header">
                 @lang('notification.send-sms')
             </div>
-            
+            @include('messages.show-messages')
+
             <form action="{{route('notification.send.sms')}}" method="POST" >
                 @csrf
                     <div class="form-group ">
                         <label for="user">@lang('notification.users')</label>
-                        <select name="user"  class="form-control" id="user">
+                        <select name="user"  class="form-control" id="user"  >
                             @foreach($users as $user)
-                            <option value="{{$user->id}}">{{$user->name}}</option>
+                            <option {{ old('user') == $user->id ? 'selected' : ''}} value="{{$user->id}}">{{$user->name}}</option>
                             @endforeach
                         </select>
                     </div>

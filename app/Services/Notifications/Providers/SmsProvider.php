@@ -4,15 +4,16 @@ namespace App\Services\Notifications\Providers ;
 
 use App\Models\User;
 use App\Services\Notifications\Providers\Contracts\ProviderInterface;
+use Exception;
 use Ipecompany\Smsirlaravel\Smsirlaravel;
 
 class SmsProvider implements ProviderInterface
 {
-    private User $user ;
+    private $user ;
     private $text ;
     private $sendDataTime ;
 
-    public function __construct(User $user, string $text, $sendDataTime=null)
+    public function __construct(string $text, User $user, $sendDataTime=null)
     {
         $this->user = $user;
         $this->text = $text;
@@ -21,7 +22,20 @@ class SmsProvider implements ProviderInterface
 
     public function send()
     {
-        $result = Smsirlaravel::send($this->text, $this->user->mobile);
-        dd($result);
+        $this->havePhoneNumber();
+        
+        try {
+            return Smsirlaravel::send($this->text, $this->user->mobile);
+
+        } catch (\Exception $err) {
+            throw new \InvalidArgumentException($err->getMessage());
+        }
+        
+    }
+
+    private function havePhoneNumber ()
+    {
+        if(is_null($this->user->mobile))
+            throw new Exception('Mobile dose not be null');
     }
 }

@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Notification;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserEmailRequest;
-use App\Mail\UserRegister;
+use App\Http\Requests\UserSmsData;
 use App\Models\User;
 use App\Services\Notifications\Constants\EmailTypes;
 use App\Services\Notifications\Notification;
-use GrahamCampbell\ResultType\Result;
-use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
     private $user ;
+    private $notification ;
+
     public function __construct()
     {
         $this->user = User::class;
@@ -47,10 +47,22 @@ class NotificationController extends Controller
         return view('notifications.send-sms' , compact('users'));
     }
     
-    public function smsSms()
+    public function sendSms(UserSmsData $request)
     {
-        $users = $this->user::all();
-        return view('notifications.send-sms' , compact('users'));
+        try {
+            $validatedData = $request->validated();            
+            $result = $this->notification->sendSms($validatedData['text'],$this->user::find($validatedData['user']));
+            
+            if(!$result['IsSuccessful'])
+                return back()->with('failed', $result['Message']);
+
+            return back()->with('success', $result['Message']);
+
+        } catch (\Exception $error) {
+            return back()->with('failed', __('notification.sms_services_has_problem'));
+        }
+        
+
     }
 
     public function home()

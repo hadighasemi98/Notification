@@ -13,7 +13,7 @@ class UserSmsData extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class UserSmsData extends FormRequest
     public function rules()
     {
         return [
-            //
+            'user' => 'required|numeric|exists:users,id',
+            'text' => 'required|string|max:256',
         ];
     }
 }
