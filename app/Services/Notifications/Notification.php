@@ -15,13 +15,13 @@ class Notification
 {
     public function __call($method, $arguments)
     {
-        $providerPath = __NAMESPACE__ . '\Providers\\' . substr($method, 4) . 'Provider';
-        
-        if (!class_exists($providerPath)) {
-            throw new Exception("$providerPath does not exist");
+        $serviceClass = __NAMESPACE__ . '\Providers\\' . substr($method, 4) . 'Provider';
+
+        if (!class_exists($serviceClass)) {
+            throw new Exception("$serviceClass does not exist");
         }
 
-        $providerInstance = new $providerPath(...$arguments);
+        $providerInstance = new $serviceClass(...$arguments);
 
         if (!is_subclass_of($providerInstance, ProviderInterface::class)) {
             throw new Exception("Class must implement App\Services\Notifications\Providers\Contracts\ProviderInterface");
